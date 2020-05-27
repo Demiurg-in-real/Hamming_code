@@ -3,6 +3,8 @@
 #include<cstdio>
 #include<iostream>
 #include<string>
+#include<cstdlib>
+#include<ctime>
 class hamming{
 	private:
 		std::vector<uint8_t> counter;
@@ -91,6 +93,18 @@ void hamming::decoding(std::vector<uint16_t> vect){
 		make_byte(code[i],decode[i]);
 	}
 }
+void interference(std::vector<uint16_t>& base){
+	std::srand(std::time(nullptr));
+	short interfer;
+	int pos;
+	for(size_t i = 0; i<base.size(); i++){
+		pos = std::rand();
+		interfer = std::rand();
+		pos %=12;
+		interfer = (((interfer>>pos)&0x1)<<pos);
+		base[i] ^= interfer;
+	}
+}
 int main(){
 	std::vector<uint8_t> kek;
 	std::string vou = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
@@ -99,9 +113,20 @@ int main(){
 	hamming kuk;
 	kuk.encode(kek);
 	auto c = kuk.en_get();
+	for(size_t i = 0; i<5;i++)
+		printf("%x\n", c[i]);
+	interference(c);
+	std::cout<<"---------------------\n";
+	for(size_t i = 0; i<5; i++)
+		printf("%x\n",c[i]);
 	kuk.decoding(c);
 	auto l = kuk.de_get();
+	std::string voi = "";
 	for(auto i:l)
-		printf("%c ", i);
+		voi+=i;
+	if(voi == vou)
+		std::cout<<"Yep\n";
+//	for(auto i:l)
+//		printf("%c ", i);
 	return 0;
 }
